@@ -1,0 +1,4 @@
+AC_INIT(regcomp.c)
+AM_INIT_AUTOMAKE(rxspencer, alpha3.8.g1)
+AM_PROG_LIBTOOL
+AC_OUTPUT(Makefile)
