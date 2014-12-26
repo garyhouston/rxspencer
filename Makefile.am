@@ -21,8 +21,8 @@ REGEXHSRC = $(srcdir)/regex2.h $(srcdir)/regcomp.c $(srcdir)/regerror.c\
 regex.h: $(REGEXHSRC) mkh
 	sh $(srcdir)/mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) > regex.h
 install-data-local:
-	$(mkinstalldirs) $(pkgincludedir)
-	$(INSTALL_DATA) regex.h $(pkgincludedir)
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	$(INSTALL_DATA) regex.h $(DESTDIR)$(pkgincludedir)
 CLEANFILES = re *.d *.ih regex.h
 TESTS = test1.sh test2.sh test3.sh
 test1.sh: re
