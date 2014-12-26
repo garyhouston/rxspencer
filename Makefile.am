@@ -7,12 +7,12 @@ noinst_HEADERS = cclass.h cname.h engine.c regex2.h utils.h
 man_MANS = rxspencer.3 rxspencer.7
 BUILT_SOURCES = main.ih debug.ih regerror.ih engine.ih regcomp.ih regex.h
 test_SOURCES = split.c debug.c main.c 
-re_d_objs = split.d debug.d main.d regcomp.d regerror.d regexec.d regfree.d
-re: $(BUILT_SOURCES) $(re_d_objs)
-	$(LINK) -o re $(re_d_objs)
-SUFFIXES = .d .ih
+re_oo_objs = split.oo debug.oo main.oo regcomp.oo regerror.oo regexec.oo regfree.oo
+re: $(BUILT_SOURCES) $(re_oo_objs)
+	$(LINK) -o re $(re_oo_objs)
+SUFFIXES = .oo .ih
 MKHFLAGS =
-.c.d:
+.c.oo:
 	$(COMPILE) -c -DREDEBUG $< -o $@
 .c.ih:
 	sh $(srcdir)/mkh $(MKHFLAGS) -p $< > $@
@@ -23,12 +23,11 @@ regex.h: $(REGEXHSRC) mkh
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
 	$(INSTALL_DATA) regex.h $(DESTDIR)$(pkgincludedir)
-CLEANFILES = re *.d *.ih regex.h
+CLEANFILES = re *.oo *.ih regex.h
 TESTS = test1.sh test2.sh test3.sh
 test1.sh: re
 EXTRA_DIST = COPYRIGHT WHATSNEW tests autogen.sh mkh\
-	Makefile.orig $(TESTS) $(test_SOURCES) $(man_MANS)\
-	fake/memmove.c fake/limits.h fake/stdlib.h
+	Makefile.orig $(TESTS) $(test_SOURCES) $(man_MANS)
 debug.lo: debug.c debug.ih regex.h utils.h regex2.h
 main.lo: main.c main.ih regex.h 
 regcomp.lo: regcomp.c regcomp.ih cclass.h cname.h regex.h regex2.h utils.h 

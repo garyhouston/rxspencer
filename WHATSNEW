@@ -1,3 +1,6 @@
+New in alpha3.8.g5 (Gary Houston): Configuration scripts updated. Fixed
+"make check". Deleted unused "fake" C library headers.
+
 New in alpha3.8.g4 (Gary Houston): Makefile.am: account for $(DESTDIR)
 in install-data-local, thanks to  Aleksey Cheusov. Configuration scripts
 updated.
