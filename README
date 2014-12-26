@@ -1,11 +1,22 @@
-This is a modified copy of Henry Spencer's regular expression library,
-set up to allow installation as a shared library separate from
-system-supplied regex libraries.
+This is a copy of Henry Spencer's regular expression library, with
+modifications to the build system:
+
+autoconf/automake/libtool support has been added to allow building a
+shared library on many platforms (in theory).  In other cases, a
+static library will be built.
+
+The names of installed files have been changed to avoid conflict with
+other regex libraries.
+
+Related URLs:
+
+http://www.arglist.com/regex/
+ftp://ftp.zoo.toronto.edu/pub/ for the original regex.shar.
 
 Installation
 ============
 
-Ignore the notes in the original README below, use:
+Ignore the notes in the original README below and try something like:
 
 ./configure
 make

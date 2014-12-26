@@ -1,3 +1,12 @@
+New in alpha3.8.g2 (Gary Houston): configure.in, Makefile.am: updated
+for newer versions of autoconf/automake/libtool, with miscellaneous
+changes.  mkh: don't set PATH, in case utilities are in non-standard
+locations (i.e., cygwin).
+
+New in alpha3.8.g1 (Gary Houston): Use autoconf/automake/libtool to
+build, test and install the library.  Renamed the installed files to
+avoid conflicts with other regex libraries.
+
 New in alpha3.8:  Bug fix for signed/unsigned mixup, found and fixed
 by the FreeBSD folks.
 

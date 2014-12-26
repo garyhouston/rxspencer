@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p2 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -62,17 +62,21 @@ host_triplet = @host@
 AS = @AS@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign no-dependencies
 lib_LTLIBRARIES = librxspencer.la
-librxspencer_la_LDFLAGS = -version-info 0:0:0
+librxspencer_la_LDFLAGS = -version-info 0:1:0 -no-undefined -module
 INCLUDES = -DPOSIX_MISTAKE
 librxspencer_la_SOURCES = regcomp.c regerror.c regexec.c regfree.c
 noinst_HEADERS = cclass.h cname.h engine.c regex2.h utils.h
@@ -113,8 +117,8 @@ NROFF = nroff
 HEADERS =  $(noinst_HEADERS)
 
 DIST_COMMON =  README INSTALL Makefile.am Makefile.in aclocal.m4 \
-config.guess config.sub configure configure.in install-sh ltconfig \
-ltmain.sh missing mkinstalldirs
+config.guess config.sub configure configure.in install-sh ltmain.sh \
+missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -126,9 +130,9 @@ OBJECTS = $(librxspencer_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .d .ih .lo .o .s
+.SUFFIXES: .S .c .d .ih .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -170,6 +174,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -178,6 +187,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -351,20 +361,13 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-regcomp.lo regcomp.o : regcomp.c regex.h utils.h regex2.h cclass.h \
-	cname.h regcomp.ih
-regerror.lo regerror.o : regerror.c regex.h utils.h regerror.ih
-regexec.lo regexec.o : regexec.c regex.h utils.h regex2.h engine.c \
-	engine.ih
-regfree.lo regfree.o : regfree.c regex.h utils.h regex2.h
-
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
@@ -481,13 +484,17 @@ re: $(BUILT_SOURCES) $(re_d_objs)
 .c.ih:
 	sh $(srcdir)/mkh $(MKHFLAGS) -p $< > $@
 regex.h: $(REGEXHSRC) mkh
-	sh $(srcdir)/mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) >regex.tmp
-	cmp -s regex.tmp regex.h 2>/dev/null || cp regex.tmp regex.h
-	rm -f regex.tmp
+	sh $(srcdir)/mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) > regex.h
 install-data-local:
 	$(mkinstalldirs) $(pkgincludedir)
 	$(INSTALL_DATA) regex.h $(pkgincludedir)
 test1.sh: re
+debug.lo: debug.c debug.ih regex.h utils.h regex2.h
+main.lo: main.c main.ih regex.h 
+regcomp.lo: regcomp.c regcomp.ih cclass.h cname.h regex.h regex2.h utils.h 
+regerror.lo: regerror.c regerror.ih regex.h utils.h
+regexec.lo: regexec.c engine.c engine.ih regex.h regex2.h utils.h
+split.lo: split.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
