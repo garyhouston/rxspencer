@@ -1,3 +1,5 @@
+New in alpha3.8.g3 (Gary Houston): configuration scripts updated.
+
 New in alpha3.8.g2 (Gary Houston): configure.in, Makefile.am: updated
 for newer versions of autoconf/automake/libtool, with miscellaneous
 changes.  mkh: don't set PATH, in case utilities are in non-standard

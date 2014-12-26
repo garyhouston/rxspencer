@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign no-dependencies
 lib_LTLIBRARIES = librxspencer.la
-librxspencer_la_LDFLAGS = -version-info 0:1:0 -no-undefined -module
-INCLUDES = -DPOSIX_MISTAKE
+librxspencer_la_LDFLAGS = -version-info 0:2:0 -no-undefined -module
+AM_CPPFLAGS = -DPOSIX_MISTAKE
 librxspencer_la_SOURCES = regcomp.c regerror.c regexec.c regfree.c
 noinst_HEADERS = cclass.h cname.h engine.c regex2.h utils.h
 man_MANS = rxspencer.3 rxspencer.7
