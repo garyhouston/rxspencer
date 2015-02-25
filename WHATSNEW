@@ -1,3 +1,7 @@
+New in alpha3.8.g6 (Gary Houston): Bug fix for integer overflow in regcomp
+for excessively long pattern strings. CERT Vulnerability Note VU#695940.
+Found by Guido Vranken. Configuration scripts updated. 25 Feb 2015.
+
 New in alpha3.8.g5 (Gary Houston): Configuration scripts updated. Fixed
 "make check". Deleted unused "fake" C library headers.
 
