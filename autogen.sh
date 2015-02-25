@@ -2,4 +2,4 @@
 libtoolize --automake --force
 aclocal
 autoconf -Wall --force
-automake -Wall --add-missing --force-missing
+automake -Wall --add-missing --force-missing --copy
