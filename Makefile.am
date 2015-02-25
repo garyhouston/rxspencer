@@ -26,7 +26,7 @@ install-data-local:
 CLEANFILES = re *.oo *.ih regex.h
 TESTS = test1.sh test2.sh test3.sh
 test1.sh: re
-EXTRA_DIST = COPYRIGHT WHATSNEW tests autogen.sh mkh\
+EXTRA_DIST = COPYRIGHT WHATSNEW tests autogen.sh compile mkh\
 	Makefile.orig $(TESTS) $(test_SOURCES) $(man_MANS)
 debug.lo: debug.c debug.ih regex.h utils.h regex2.h
 main.lo: main.c main.ih regex.h 
