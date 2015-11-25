@@ -6,7 +6,7 @@ librxspencer_la_SOURCES = regcomp.c regerror.c regexec.c regfree.c
 noinst_HEADERS = cclass.h cname.h engine.c regex2.h utils.h
 man_MANS = rxspencer.3 rxspencer.7
 BUILT_SOURCES = main.ih debug.ih regerror.ih engine.ih regcomp.ih regex.h
-test_SOURCES = split.c debug.c main.c 
+test_sources = split.c debug.c main.c 
 re_oo_objs = split.oo debug.oo main.oo regcomp.oo regerror.oo regexec.oo regfree.oo
 re: $(BUILT_SOURCES) $(re_oo_objs)
 	$(LINK) -o re $(re_oo_objs)
@@ -27,7 +27,7 @@ CLEANFILES = re *.oo *.ih regex.h
 TESTS = test1.sh test2.sh test3.sh
 test1.sh: re
 EXTRA_DIST = COPYRIGHT WHATSNEW tests autogen.sh compile mkh\
-	Makefile.orig $(TESTS) $(test_SOURCES) $(man_MANS)
+	Makefile.orig $(TESTS) $(test_sources) $(man_MANS)
 debug.lo: debug.c debug.ih regex.h utils.h regex2.h
 main.lo: main.c main.ih regex.h 
 regcomp.lo: regcomp.c regcomp.ih cclass.h cname.h regex.h regex2.h utils.h 
