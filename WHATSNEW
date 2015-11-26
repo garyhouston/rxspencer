@@ -1,5 +1,5 @@
 New in alpha3.8.g7 (Gary Houston): Configuration scripts updated. Make sure
-symlinks aren't created by libtool. 25 Nov 2015.
+symlinks aren't created by libtool. 26 Nov 2015.
 
 New in alpha3.8.g6 (Gary Houston): Bug fix for integer overflow in regcomp
 for excessively long pattern strings. CERT Vulnerability Note VU#695940.
