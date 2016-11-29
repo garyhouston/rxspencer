@@ -8,10 +8,7 @@ static library will be built.
 The names of installed files have been changed to avoid conflict with
 other regex libraries.
 
-Related URLs:
-
-https://garyhouston.github.io/regex/
-ftp://ftp.zoo.toronto.edu/pub/ for the original regex.shar.
+See also: https://garyhouston.github.io/regex/
 
 Installation
 ============
