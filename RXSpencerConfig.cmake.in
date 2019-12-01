@@ -1,0 +1,11 @@
+# - Config file for the RXSpencer package
+
+@PACKAGE_INIT@
+
+set ( RXSPENCER_LIBRARIES rxspencer )
+set_and_check ( RXSPENCER_INCLUDE_DIRS @PACKAGE_RXSPENCER_INCLUDE_DIR@ )
+
+# Load targets
+if ( NOT TARGET rxspencer )
+  include ( @PACKAGE_CMAKE_CONFIG_DEST@/RXSpencerTargets.cmake )
+endif()
