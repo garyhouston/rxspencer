@@ -1,3 +1,6 @@
+New in alpha3.8.g8 (Gary Houston): Conversion to cmake build system,
+contributed by Stephen Just. (not released)
+
 New in alpha3.8.g7 (Gary Houston): Configuration scripts updated. Make sure
 symlinks aren't created by libtool. 26 Nov 2015.
 
