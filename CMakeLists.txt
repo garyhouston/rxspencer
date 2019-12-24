@@ -6,6 +6,7 @@
 project ( rxspencer C )
 cmake_minimum_required ( VERSION 3.0 )
 include ( cmake/mkh.cmake )
+option ( rxshared "build shared library instead of static" OFF )
 
 # Patch regerror.c to avoid conflict in MSVC
 if ( MSVC )
@@ -43,13 +44,20 @@ set ( RXSPENCER_INCLUDE_DIR include/rxspencer )
 set ( RXSPENCER_BIN_DIR bin )
 set ( RXSPENCER_LIB_DIR lib )
 set ( RXSPENCER_DATA_DIR share/rxspencer )
+set ( RXSPENCER_MAN3_DIR man/man3 )
+set ( RXSPENCER_MAN7_DIR man/man7 )
 
 if ( MSVC )
   set ( DEF_FILE librxspencer.def )
 endif ( )
 
-add_library ( rxspencer ${RXSPENCER_SRCS} ${DEF_FILE} )
-set_target_properties ( rxspencer PROPERTIES PUBLIC_HEADER ${CMAKE_BINARY_DIR}/regex.h )
+if ( rxshared )
+  add_library ( rxspencer SHARED ${RXSPENCER_SRCS} ${DEF_FILE} )
+else ( )
+  add_library ( rxspencer STATIC ${RXSPENCER_SRCS} ${DEF_FILE} )
+endif ( )
+
+set_target_properties ( rxspencer PROPERTIES PUBLIC_HEADER ${CMAKE_BINARY_DIR}/regex.h VERSION 0.0.3 SOVERSION 0)
 target_include_directories ( rxspencer PUBLIC
   $<INSTALL_INTERFACE:${RXSPENCER_INCLUDE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}> )
@@ -64,6 +72,8 @@ install ( TARGETS rxspencer
 # Install docs
 set ( RXSPENCER_DATA_FILES "COPYRIGHT;README;WHATSNEW" )
 install ( FILES ${RXSPENCER_DATA_FILES} DESTINATION ${RXSPENCER_DATA_DIR} )
+install ( FILES rxspencer.3 DESTINATION ${RXSPENCER_MAN3_DIR} )
+install ( FILES rxspencer.7 DESTINATION ${RXSPENCER_MAN7_DIR} )
 
 # generate cmake configuration file
 include ( CMakePackageConfigHelpers )
