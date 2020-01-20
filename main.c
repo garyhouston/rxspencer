@@ -1,4 +1,6 @@
+#include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <regex.h>
@@ -23,6 +25,7 @@ extern void regprint();
 /*
  - main - do the simple case, hand off to regress() for regression
  */
+int
 main(argc, argv)
 int argc;
 char *argv[];
@@ -77,8 +80,8 @@ char *argv[];
 	err = regcomp(&re, argv[optind++], copts);
 	if (err) {
 		len = regerror(err, &re, erbuf, sizeof(erbuf));
-		fprintf(stderr, "error %s, %d/%d `%s'\n",
-			eprint(err), len, sizeof(erbuf), erbuf);
+		fprintf(stderr, "error %s, %lu/%d `%s'\n",
+			eprint(err), (unsigned long)len, (int)sizeof(erbuf), erbuf);
 		exit(status);
 	}
 	regprint(&re, stdout);	
@@ -95,15 +98,15 @@ char *argv[];
 	err = regexec(&re, argv[optind], (size_t)NS, subs, eopts);
 	if (err) {
 		len = regerror(err, &re, erbuf, sizeof(erbuf));
-		fprintf(stderr, "error %s, %d/%d `%s'\n",
-			eprint(err), len, sizeof(erbuf), erbuf);
+		fprintf(stderr, "error %s, %lu/%d `%s'\n",
+			eprint(err), (unsigned long)len, (int)sizeof(erbuf), erbuf);
 		exit(status);
 	}
 	if (!(copts&REG_NOSUB)) {
 		len = (int)(subs[0].rm_eo - subs[0].rm_so);
 		if (subs[0].rm_so != -1) {
 			if (len != 0)
-				printf("match `%.*s'\n", len,
+				printf("match `%.*s'\n", (int)len,
 					argv[optind] + subs[0].rm_so);
 			else
 				printf("match `'@%.1s\n",
@@ -232,7 +235,7 @@ int opts;			/* may not match f1 */
 		len = regerror(err, &re, erbuf, sizeof(erbuf));
 		fprintf(stderr, "%d: %s error %s, %d/%d `%s'\n",
 					line, type, eprint(err), len,
-					sizeof(erbuf), erbuf);
+					(int)sizeof(erbuf), erbuf);
 		status = 1;
 	} else if (err == 0 && opt('C', f1)) {
 		/* unexpected success */
@@ -263,7 +266,7 @@ int opts;			/* may not match f1 */
 		len = regerror(err, &re, erbuf, sizeof(erbuf));
 		fprintf(stderr, "%d: %s exec error %s, %d/%d `%s'\n",
 					line, type, eprint(err), len,
-					sizeof(erbuf), erbuf);
+					(int)sizeof(erbuf), erbuf);
 		status = 1;
 	} else if (err != 0) {
 		/* nothing more to check */
