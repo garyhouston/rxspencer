@@ -5,8 +5,14 @@
 
 project ( rxspencer C )
 cmake_minimum_required ( VERSION 3.0 )
-include ( cmake/mkh.cmake )
 option ( rxshared "build shared library instead of static" OFF )
+enable_testing()
+include ( cmake/mkh.cmake )
+
+# Define POSIX_MISTAKE to allow unmatched right parentheses as literals, as
+# required by POSIX 1003.2.
+# Define REDEBUG to enable debugging.
+add_definitions(-DPOSIX_MISTAKE -DREDEBUG)
 
 # Patch regerror.c to avoid conflict in MSVC
 if ( MSVC )
@@ -92,3 +98,8 @@ install ( EXPORT RXSpencerTargets DESTINATION ${CMAKE_CONFIG_DEST} )
 install ( FILES
   ${CMAKE_CURRENT_BINARY_DIR}/RXSpencerConfig.cmake
   DESTINATION ${CMAKE_CONFIG_DEST} )
+
+add_executable(tester ${RXSPENCER_SRCS} debug.c main.c split.c)
+add_test(NAME test1 COMMAND tester < tests)
+add_test(NAME test2 COMMAND tester -el < tests)
+add_test(NAME test3 COMMAND tester -er < tests)
