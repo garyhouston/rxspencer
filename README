@@ -26,11 +26,16 @@ cmake -Drxshared=1 .
 
 to build:
 make
-#make check (currently broken)
 make install
 
 also required on Linux, after installing the shared library:
 ldconfig
+
+to run the tests:
+make test
+
+to run the tests, with output displayed:
+ctest -V
 
 Usage
 =====
