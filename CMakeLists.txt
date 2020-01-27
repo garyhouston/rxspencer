@@ -100,6 +100,6 @@ install ( FILES
   DESTINATION ${CMAKE_CONFIG_DEST} )
 
 add_executable(tester ${RXSPENCER_SRCS} debug.c main.c split.c)
-add_test(NAME test1 COMMAND tester < tests)
-add_test(NAME test2 COMMAND tester -el < tests)
-add_test(NAME test3 COMMAND tester -er < tests)
+add_test(NAME test1 COMMAND sh -c "./tester -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
+add_test(NAME test2 COMMAND sh -c "./tester -el -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
+add_test(NAME test3 COMMAND sh -c "./tester -er -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
