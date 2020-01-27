@@ -15,6 +15,7 @@ int status = 0;
 
 int copts = REG_EXTENDED;
 int eopts = 0;
+char *fopts = 0;
 regoff_t startoff = 0;
 regoff_t endoff = 0;
 
@@ -44,13 +45,16 @@ char *argv[];
 
 	progname = argv[0];
 
-	while ((c = getopt(argc, argv, "c:e:S:E:x")) != EOF)
+	while ((c = getopt(argc, argv, "c:e:f:S:E:x")) != EOF)
 		switch (c) {
 		case 'c':	/* compile options */
 			copts = options('c', optarg);
 			break;
 		case 'e':	/* execute options */
 			eopts = options('e', optarg);
+			break;
+		case 'f':	/* take regression input from file */
+			fopts = optarg;
 			break;
 		case 'S':	/* start offset */
 			startoff = (regoff_t)atoi(optarg);
@@ -72,6 +76,16 @@ char *argv[];
 		exit(2);
 	}
 
+	if (fopts != 0) {
+		FILE *f = fopen(fopts, "r");
+		if (f == NULL) {
+			fputs("unable to open input\n", stderr);
+			exit(1);
+		}
+		regress(f);
+		exit(status);
+	}
+	
 	if (optind >= argc) {
 		regress(stdin);
 		exit(status);
