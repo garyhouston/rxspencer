@@ -34,7 +34,6 @@ char *argv[];
 	char erbuf[100];
 	int err;
 	size_t len;
-	int c;
 	int errflg = 0;
 	register int i;
 	int optind = parseopts(argc, argv);
