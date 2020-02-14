@@ -1,6 +1,6 @@
 This is a modified version of Henry Spencer's regular expression library.
 The original library can be found at https://github.com/garyhouston/regex
-A discription of Spencer's various libraries can be found at
+A description of Spencer's various libraries can be found at
 https://garyhouston.github.io/regex/
 
 The changes in this version are:
