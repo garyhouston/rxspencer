@@ -1,18 +1,30 @@
-This is a copy of Henry Spencer's regular expression library, with
-modifications to the build system. I created it to allow building a
-shared library, for a project where the library needed to be
-dynamically loaded. It uses cmake with help from scripts contributed
-by Stephen Just, modified from LuaDist.
+This is a modified version of Henry Spencer's regular expression library.
+The original library can be found at https://github.com/garyhouston/regex
+A discription of Spencer's various libraries can be found at
+https://garyhouston.github.io/regex/
 
-The names of installed files (library and headers) have been changed
-to avoid conflict with other regex libraries.
+The changes in this version are:
+* The library name has been changed to rxspencer, and the header to
+  rxspencer.h, to allow easy installation as a system library on Linux
+  without conflicting with other regex libraries.
+* A CMake build system, which can build either static or shared libraries,
+  maybe even on non-Unix systems.
+* A few code modernizations and changes to improve portabilty. 
 
-Website: https://garyhouston.github.io/regex/
+I (Gary Houston) originally made this version with a build system
+based on GNU Automake and Libtool, to allow building a shared library
+for a project where the library needed to be dynamically loaded. The
+CMake scripts were contributed by Stephen Just, modified from LuaDist
+versions.
+
+Spencer's original license can be found in the COPYRIGHT file. The CMake
+scripts are licensed under the MIT license. I release all of my own
+changes to the public domain under the Creative Commons Zero license.
 
 Installation
 ============
 
-Ignore the installation notes in the original README below. cmake
+Ignore the installation notes in the original README below. CMake
 needs to be installed. To build from a Linux command line, or
 something compatible, within the source directory:
 
@@ -48,7 +60,8 @@ Include the following headers in a C program:
 Link with the library using the -lrxspencer flag, as in:
 gcc test.c -o test -lrxspencer
 
-Man Pages: rxspencer(3), rxspencer(7)
+The library is further described in the supplied man pages: rxspencer.3
+and rxspencer.7.
 
 --
 Gary Houston,  ghouston@arglist.com
