@@ -4,9 +4,10 @@ A description of Spencer's various libraries can be found at
 https://garyhouston.github.io/regex/
 
 The changes in this version are:
-* The library name has been changed to rxspencer, and the header to
-  rxspencer.h, to allow easy installation as a system library on Linux
-  without conflicting with other regex libraries.
+* The library name has been changed to librxspencer, the header placed
+  in a directory rxspencer, and the man pages named accordingly, to allow
+  easy installation as a system library on Linux without conflicting with
+  other regex libraries.
 * A CMake build system, which can build either static or shared libraries,
   maybe even on non-Unix systems.
 * A few code modernizations and changes to improve portabilty. 
