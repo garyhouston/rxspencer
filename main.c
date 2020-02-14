@@ -1,4 +1,3 @@
-#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +7,6 @@
 
 #include "main.ih"
 
-char *progname;
 int debug = 0;
 int line = 0;
 int status = 0;
@@ -18,7 +16,6 @@ int eopts = 0;
 char *fopts = 0;
 regoff_t startoff = 0;
 regoff_t endoff = 0;
-
 
 extern int split();
 extern void regprint();
@@ -40,41 +37,7 @@ char *argv[];
 	int c;
 	int errflg = 0;
 	register int i;
-	extern int optind;
-	extern char *optarg;
-
-	progname = argv[0];
-
-	while ((c = getopt(argc, argv, "c:e:f:S:E:x")) != EOF)
-		switch (c) {
-		case 'c':	/* compile options */
-			copts = options('c', optarg);
-			break;
-		case 'e':	/* execute options */
-			eopts = options('e', optarg);
-			break;
-		case 'f':	/* take regression input from file */
-			fopts = optarg;
-			break;
-		case 'S':	/* start offset */
-			startoff = (regoff_t)atoi(optarg);
-			break;
-		case 'E':	/* end offset */
-			endoff = (regoff_t)atoi(optarg);
-			break;
-		case 'x':	/* Debugging. */
-			debug++;
-			break;
-		case '?':
-		default:
-			errflg++;
-			break;
-		}
-	if (errflg) {
-		fprintf(stderr, "usage: %s ", progname);
-		fprintf(stderr, "[-c copt][-C][-d] [re]\n");
-		exit(2);
-	}
+	int optind = parseopts(argc, argv);
 
 	if (fopts != 0) {
 		FILE *f = fopen(fopts, "r");
@@ -321,6 +284,64 @@ int opts;			/* may not match f1 */
 	}
 
 	regfree(&re);
+}
+
+/*
+ - parseopts - half-baked option processing to avoid using getopt, which isn't always available on Windows.
+ == int parseopts(int argc, char *argv[]);
+ */
+int
+parseopts(argc, argv)
+int argc;
+char *argv[];
+{
+	int i, j;
+	for (i = 1; i < argc; i++) {
+		if (argv[i][0] != '-' || argv[i][1] == 0) {
+			break;
+		}
+		for (j = 1; argv[i][j] != 0; j++) {
+			char opt = argv[i][j];
+			if (opt == 'x') {
+				debug++;
+			} else {
+				char *arg;
+				if (argv[i][j+1] != 0) {
+					arg = argv[i] + j+1;
+				} else {
+					if (i == argc-1) {
+						fprintf(stderr, "option requires an argument -- '%c'\n", opt);
+						exit(2);
+					}
+					arg = argv[i+1];
+					i++;
+				}
+				switch (opt) {
+				case 'c':
+					copts = options(opt, arg);
+					break;
+				case 'e':
+					eopts = options(opt, arg);
+					break;
+				case 'f':
+					fopts = arg;
+					break;
+				case 'S':
+					startoff = (regoff_t)atoi(arg);
+					break;
+				case 'E':
+					endoff = (regoff_t)atoi(arg);
+					break;
+				default:
+					fprintf(stderr, "usage: %s ", argv[0]);
+					fprintf(stderr, "[-x][-c copt][-e eopt][-f file][-S startoff][-E endoff] [re]\n");
+					exit(2);
+				}
+				break;
+			}
+		}
+	}
+	return i;
 }
 
 /*
