@@ -13,6 +13,7 @@ include ( cmake/mkh.cmake )
 # required by POSIX 1003.2.
 # Define REDEBUG to enable debugging.
 add_definitions(-DPOSIX_MISTAKE -DREDEBUG)
+#add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 # Patch regerror.c to avoid conflict in MSVC
 if ( MSVC )
