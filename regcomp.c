@@ -47,8 +47,7 @@ static char nuls[10];		/* place to point scanner in event of error */
 #define	NEXT2()	(p->next += 2)
 #define	NEXTn(n)	(p->next += (n))
 #define	GETNEXT()	(*p->next++)
-#define	SETERROR(e)	seterr(p, (e))
-#define	REQUIRE(co, e)	((co) || SETERROR(e))
+#define	REQUIRE(co, e)	((co) || seterr(p, (e)))
 #define	MUSTEAT(c, e)	(REQUIRE(MORE() && GETNEXT() == (c), e))
 #define	EMIT(op, sopnd)	doemit(p, (sop)(op), (size_t)(sopnd))
 #define	INSERT(op, pos)	doinsert(p, (sop)(op), HERE()-(pos)+1, pos)
@@ -176,7 +175,7 @@ int cflags;
 #ifndef REDEBUG
 	/* not debugging, so can't rely on the assert() in regexec() */
 	if (g->iflags&BAD)
-		SETERROR(REG_ASSERT);
+		seterr(p, REG_ASSERT);
 #endif
 
 	/* win or lose, we're done */
@@ -276,7 +275,7 @@ register struct parse *p;
 		 * all.  So an unmatched ) is legal POSIX, at least until
 		 * we can get it fixed.
 		 */
-		SETERROR(REG_EPAREN);
+		seterr(p, REG_EPAREN);
 		break;
 #endif
 	case '^':
@@ -291,12 +290,12 @@ register struct parse *p;
 		p->g->neol++;
 		break;
 	case '|':
-		SETERROR(REG_EMPTY);
+		seterr(p, REG_EMPTY);
 		break;
 	case '*':
 	case '+':
 	case '?':
-		SETERROR(REG_BADRPT);
+		seterr(p, REG_BADRPT);
 		break;
 	case '.':
 		if (p->g->cflags&REG_NEWLINE)
@@ -366,7 +365,7 @@ register struct parse *p;
 			while (MORE() && PEEK() != '}')
 				NEXT();
 			REQUIRE(MORE(), REG_EBRACE);
-			SETERROR(REG_BADBR);
+			seterr(p, REG_BADBR);
 		}
 		break;
 	}
@@ -377,7 +376,7 @@ register struct parse *p;
 	if (!( c == '*' || c == '+' || c == '?' ||
 				(c == '{' && MORE2() && isdigit(PEEK2())) ) )
 		return;
-	SETERROR(REG_BADRPT);
+	seterr(p, REG_BADRPT);
 }
 
 /*
@@ -470,7 +469,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 		p_bracket(p);
 		break;
 	case BACKSL|'{':
-		SETERROR(REG_BADRPT);
+		seterr(p, REG_BADRPT);
 		break;
 	case BACKSL|'(':
 		p->g->nsub++;
@@ -490,7 +489,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 		break;
 	case BACKSL|')':	/* should not get here -- must be user */
 	case BACKSL|'}':
-		SETERROR(REG_EPAREN);
+		seterr(p, REG_EPAREN);
 		break;
 	case BACKSL|'1':
 	case BACKSL|'2':
@@ -512,7 +511,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 			(void) dupl(p, p->pbegin[i]+1, p->pend[i]);
 			EMIT(O_BACK, i);
 		} else
-			SETERROR(REG_ESUBREG);
+			seterr(p, REG_ESUBREG);
 		p->g->backrefs = 1;
 		break;
 	case '*':
@@ -544,7 +543,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 			while (MORE() && !SEETWO('\\', '}'))
 				NEXT();
 			REQUIRE(MORE(), REG_EBRACE);
-			SETERROR(REG_BADBR);
+			seterr(p, REG_BADBR);
 		}
 	} else if (c == (unsigned char)'$')	/* $ (but not \$) ends it */
 		return(1);
@@ -576,7 +575,7 @@ register struct parse *p;
  - p_bracket - parse a bracketed character list
  == static void p_bracket(register struct parse *p);
  *
- * Note a significant property of this code:  if the allocset() did SETERROR,
+ * Note a significant property of this code:  if the allocset() did seterr,
  * no set operations are done.
  */
 static void
@@ -668,7 +667,7 @@ register cset *cs;
 		c = (MORE2()) ? PEEK2() : '\0';
 		break;
 	case '-':
-		SETERROR(REG_ERANGE);
+		seterr(p, REG_ERANGE);
 		return;			/* NOTE RETURN */
 		break;
 	default:
@@ -759,7 +758,7 @@ register cset *cs;
 			break;
 	if (cp->name == NULL) {
 		/* oops, didn't find it */
-		SETERROR(REG_ECTYPE);
+		seterr(p, REG_ECTYPE);
 		return;
 	}
 
@@ -926,7 +925,7 @@ int endc;			/* name ended by endc,']' */
 	while (MORE() && !SEETWO(endc, ']'))
 		NEXT();
 	if (!MORE()) {
-		SETERROR(REG_EBRACK);
+		seterr(p, REG_EBRACK);
 		return(0);
 	}
 	len = p->next - sp;
@@ -935,7 +934,7 @@ int endc;			/* name ended by endc,']' */
 			return(cp->code);	/* known name */
 	if (len == 1)
 		return(*sp);	/* single character */
-	SETERROR(REG_ECOLLATE);			/* neither */
+	seterr(p, REG_ECOLLATE);			/* neither */
 	return(0);
 }
 
@@ -1096,7 +1095,7 @@ int to;				/* to this number of times (maybe INFINITY) */
 		repeat(p, copy, from-1, to);
 		break;
 	default:			/* "can't happen" */
-		SETERROR(REG_ASSERT);	/* just in case */
+		seterr(p, REG_ASSERT);	/* just in case */
 		break;
 	}
 }
@@ -1156,7 +1155,7 @@ register struct parse *p;
 								0, css);
 		else {
 			no = 0;
-			SETERROR(REG_ESPACE);
+			seterr(p, REG_ESPACE);
 			/* caller's responsibility not to do set ops */
 		}
 	}
@@ -1288,7 +1287,7 @@ register char *cp;
 	else
 		cs->multis = realloc(cs->multis, cs->smultis);
 	if (cs->multis == NULL) {
-		SETERROR(REG_ESPACE);
+		seterr(p, REG_ESPACE);
 		return;
 	}
 
@@ -1582,7 +1581,7 @@ register sopno size;
 
 	sp = (sop *)realloc(p->strip, size*sizeof(sop));
 	if (sp == NULL) {
-		SETERROR(REG_ESPACE);
+		seterr(p, REG_ESPACE);
 		return;
 	}
 	p->strip = sp;
@@ -1601,7 +1600,7 @@ register struct re_guts *g;
 	g->nstates = p->slen;
 	g->strip = (sop *)realloc((char *)p->strip, p->slen * sizeof(sop));
 	if (g->strip == NULL) {
-		SETERROR(REG_ESPACE);
+		seterr(p, REG_ESPACE);
 		g->strip = p->strip;
 	}
 }
