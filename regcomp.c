@@ -47,7 +47,7 @@ static char nuls[10];		/* place to point scanner in event of error */
 #define	NEXT2()	(p->next += 2)
 #define	NEXTn(n)	(p->next += (n))
 #define	GETNEXT()	(*p->next++)
-#define	REQUIRE(co, e)	((co) || seterr(p, (e)))
+#define	REQUIRE(co, e)	((co) ? (void) 0 : seterr(p, (e)))
 #define	MUSTEAT(c, e)	(REQUIRE(MORE() && GETNEXT() == (c), e))
 #define	EMIT(op, sopnd)	doemit(p, (sop)(op), (size_t)(sopnd))
 #define	INSERT(op, pos)	doinsert(p, (sop)(op), HERE()-(pos)+1, pos)
@@ -1102,9 +1102,9 @@ int to;				/* to this number of times (maybe INFINITY) */
 
 /*
  - seterr - set an error condition
- == static int seterr(register struct parse *p, int e);
+ == static void seterr(register struct parse *p, int e);
  */
-static int			/* useless but makes type checking happy */
+static void
 seterr(p, e)
 register struct parse *p;
 int e;
@@ -1113,7 +1113,6 @@ int e;
 		p->error = e;
 	p->next = nuls;		/* try to bring things to a halt */
 	p->end = nuls;
-	return(0);		/* make the return value well-defined */
 }
 
 /*
