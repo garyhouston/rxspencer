@@ -1300,9 +1300,9 @@ register char *cp;
 	cs->multis[cs->smultis - 1] = '\0';
 }
 
+#if 0
 /*
  - mcsub - subtract a collating element from a cset
- == static void mcsub(register cset *cs, register char *cp);
  */
 static void
 mcsub(cs, cp)
@@ -1329,7 +1329,6 @@ register char *cp;
 
 /*
  - mcin - is a collating element in a cset?
- == static int mcin(register cset *cs, register char *cp);
  */
 static int
 mcin(cs, cp)
@@ -1341,7 +1340,6 @@ register char *cp;
 
 /*
  - mcfind - find a collating element in a cset
- == static char *mcfind(register cset *cs, register char *cp);
  */
 static char *
 mcfind(cs, cp)
@@ -1358,7 +1356,6 @@ register char *cp;
 	return(NULL);
 }
 
-#if 0
 /*
  - mcinvert - invert the list of collating elements in a cset
  *
