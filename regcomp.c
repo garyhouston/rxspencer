@@ -719,10 +719,7 @@ register cset *cs;
 	}
 }
 
-/* Character-class table. The ANSI C character classification
-   functions could be used instead, e.g., isalnum, although this would
-   change the functionality when locales are switched, with unknown
-   consequences. */
+/* Character-class table. */
 static struct cclass {
 	char *name;
 	char *chars;
