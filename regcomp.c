@@ -622,8 +622,11 @@ register struct parse *p;
 				if (ci != i)
 					CHadd(cs, ci);
 			}
+		assert(cs->multis == NULL);	/* xxx */
+#if 0		
 		if (cs->multis != NULL)
 			mccase(p, cs);
+#endif
 	}
 	if (invert) {
 		register int i;
@@ -635,8 +638,11 @@ register struct parse *p;
 				CHadd(cs, i);
 		if (p->g->cflags&REG_NEWLINE)
 			CHsub(cs, '\n');
+		assert(cs->multis == NULL);	/* xxx */
+#if 0
 		if (cs->multis != NULL)
 			mcinvert(p, cs);
+#endif
 	}
 
 	assert(cs->multis == NULL);		/* xxx */
@@ -1352,9 +1358,9 @@ register char *cp;
 	return(NULL);
 }
 
+#if 0
 /*
  - mcinvert - invert the list of collating elements in a cset
- == static void mcinvert(register struct parse *p, register cset *cs);
  *
  * This would have to know the set of possibilities.  Implementation
  * is deferred.
@@ -1369,7 +1375,6 @@ register cset *cs;
 
 /*
  - mccase - add case counterparts of the list of collating elements in a cset
- == static void mccase(register struct parse *p, register cset *cs);
  *
  * This would have to know the set of possibilities.  Implementation
  * is deferred.
@@ -1381,6 +1386,7 @@ register cset *cs;
 {
 	assert(cs->multis == NULL);	/* xxx */
 }
+#endif
 
 /*
  - isinsets - is this character in any sets?
