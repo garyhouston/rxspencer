@@ -473,7 +473,7 @@ char *should;
 		return("did not match");
 
 	/* check for in range */
-	if (sub.rm_eo > strlen(str)) {
+	if ((size_t) sub.rm_eo > strlen(str)) {
 		sprintf(grump, "start %ld end %ld, past end of string",
 					(long)sub.rm_so, (long)sub.rm_eo);
 		return(grump);
