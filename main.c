@@ -34,7 +34,7 @@ char *argv[];
 	char erbuf[100];
 	int err;
 	size_t len;
-	register int i;
+	int i;
 	int optind = parseopts(argc, argv);
 
 	if (fopts != 0) {
@@ -196,7 +196,7 @@ int opts;			/* may not match f1 */
 	int err;
 	int len;
 	char *type = (opts & REG_EXTENDED) ? "ERE" : "BRE";
-	register int i;
+	int i;
 	char *grump;
 	char f0copy[1000];
 	char f2copy[1000];
@@ -351,9 +351,9 @@ options(type, s)
 int type;			/* 'c' compile, 'e' exec */
 char *s;
 {
-	register char *p;
-	register int o = (type == 'c') ? copts : eopts;
-	register char *legal = (type == 'c') ? "bisnmp" : "^$#tl";
+	char *p;
+	int o = (type == 'c') ? copts : eopts;
+	char *legal = (type == 'c') ? "bisnmp" : "^$#tl";
 
 	for (p = s; *p != '\0'; p++)
 		if (strchr(legal, *p) != NULL)
@@ -413,11 +413,11 @@ char *s;
 
 /*
  - fixstr - transform magic characters in strings
- == void fixstr(register char *p);
+ == void fixstr(char *p);
  */
 void
 fixstr(p)
-register char *p;
+char *p;
 {
 	if (p == NULL)
 		return;
@@ -443,11 +443,11 @@ char *str;
 regmatch_t sub;
 char *should;
 {
-	register int len;
-	register int shlen;
-	register char *p;
+	int len;
+	int shlen;
+	char *p;
 	static char grump[500];
-	register char *at = NULL;
+	char *at = NULL;
 
 	if (should != NULL && strcmp(should, "-") == 0)
 		should = NULL;
