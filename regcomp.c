@@ -9,7 +9,6 @@
 #include "utils.h"
 #include "regex2.h"
 
-#include "cclass.h"
 #include "cname.h"
 
 /*
@@ -719,6 +718,30 @@ register cset *cs;
 		break;
 	}
 }
+
+/* Character-class table. The ANSI C character classification
+   functions could be used instead, e.g., isalnum, although this would
+   change the functionality when locales are switched, with unknown
+   consequences. */
+static struct cclass {
+	char *name;
+	char *chars;
+	char *multis;
+} cclasses[] = {
+	{"alnum", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", ""},
+	{"alpha", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", ""},
+	{"blank", " \t", ""},
+	{"cntrl", "\007\b\t\n\v\f\r\1\2\3\4\5\6\16\17\20\21\22\23\24\25\26\27\30\31\32\33\34\35\36\37\177", ""},
+	{"digit", "0123456789", ""},
+	{"graph", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~", ""},
+	{"lower", "abcdefghijklmnopqrstuvwxyz",	""},
+	{"print", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ", ""},
+	{"punct", "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",	""},
+	{"space", "\t\n\v\f\r ", ""},
+	{"upper", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",	""},
+	{"xdigit", "0123456789ABCDEFabcdef", ""},
+	{NULL, 0, ""}
+};
 
 /*
  - p_b_cclass - parse a character-class name and deal with it
