@@ -4,7 +4,7 @@ A description of Spencer's various libraries can be found at
 https://garyhouston.github.io/regex/
 
 The changes in this version are:
-* The library name has been changed to librxspencer, the header placed
+* The library name has been changed to rxspencer, the header placed
   in a directory rxspencer, and the man pages named accordingly, to allow
   easy installation as a system library on Linux without conflicting with
   other regex libraries.
@@ -62,7 +62,9 @@ Link with the library using the -lrxspencer flag, as in:
 gcc test.c -o test -lrxspencer
 
 The library is further described in the supplied man pages: rxspencer.3
-and rxspencer.7.
+and rxspencer.7, which are formatted at
+https://garyhouston.github.io/regex/regex3.html and
+https://garyhouston.github.io/regex/regex7.html.
 
 --
 Gary Houston,  ghouston@arglist.com
