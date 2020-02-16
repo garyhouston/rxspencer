@@ -53,9 +53,8 @@ ctest -V
 Usage
 =====
 
-Include the following headers in a C program:
+Include the following header in a C program:
 
-#include <sys/types.h>
 #include <rxspencer/regex.h>
 
 Link with the library using the -lrxspencer flag, as in:

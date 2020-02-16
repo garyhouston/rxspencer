@@ -30,19 +30,6 @@ mkh ( engine.c ${CMAKE_BINARY_DIR}/engine.ih "" )
 mkh ( regerror.c ${CMAKE_BINARY_DIR}/regerror.ih "" )
 mkh ( debug.c ${CMAKE_BINARY_DIR}/debug.ih "" )
 mkh ( main.c ${CMAKE_BINARY_DIR}/main.ih "" )
-mkh ( "regex2.h;regcomp.c;regerror.c;regexec.c;regfree.c" ${CMAKE_BINARY_DIR}/regex.h "_REGEX_H_" )
-
-# Patch regex.h for off_t on msvc
-if ( MSVC )
-  file ( READ ${CMAKE_BINARY_DIR}/regex.h REGEXH )
-  string ( REGEX MATCH "sys/types" REGEXH_PATCHED "${REGEXH}" )
-  if ( NOT REGEXH_PATCHED )
-    string ( REPLACE "typedef off_t" "#include <sys/types.h>\ntypedef off_t" REGEXH
-      "${REGEXH}" )
-    file ( WRITE "${CMAKE_BINARY_DIR}/regex.h" "${REGEXH}" )
-    set ( REGEX_H ${CMAKE_BINARY_DIR}/regex.h )
-  endif ( )
-endif ( )
 
 # rxspencer library
 set ( CMAKE_INCLUDE_CURRENT_DIR 1 )
@@ -64,7 +51,7 @@ else ( )
   add_library ( rxspencer STATIC ${RXSPENCER_SRCS} ${DEF_FILE} )
 endif ( )
 
-set_target_properties ( rxspencer PROPERTIES PUBLIC_HEADER ${CMAKE_BINARY_DIR}/regex.h VERSION 0.0.3 SOVERSION 0)
+set_target_properties ( rxspencer PROPERTIES PUBLIC_HEADER regex.h VERSION 0.0.3 SOVERSION 0)
 target_include_directories ( rxspencer PUBLIC
   $<INSTALL_INTERFACE:${RXSPENCER_INCLUDE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}> )

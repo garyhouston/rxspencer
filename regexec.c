@@ -96,14 +96,6 @@ static int nope = 0;		/* for use in asserts; shuts lint up */
 
 /*
  - regexec - interface for matching
- = extern int regexec(const regex_t *, const char *, size_t, \
- =					regmatch_t [], int);
- = #define	REG_NOTBOL	00001
- = #define	REG_NOTEOL	00002
- = #define	REG_STARTEND	00004
- = #define	REG_TRACE	00400	// tracing of execution
- = #define	REG_LARGE	01000	// force large representation
- = #define	REG_BACKR	02000	// force use of backref code
  *
  * We put this here so we can exploit knowledge of the state representation
  * when choosing which matcher to call.  Also, by this point the matchers
