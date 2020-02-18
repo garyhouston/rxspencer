@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <regex.h>
 
-#include "utils.h"
 #include "regex2.h"
 
 #ifdef _POSIX2_RE_DUP_MAX

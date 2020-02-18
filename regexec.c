@@ -14,7 +14,6 @@
 #include <ctype.h>
 #include <regex.h>
 
-#include "utils.h"
 #include "regex2.h"
 
 static int nope = 0;		/* for use in asserts; shuts lint up */
