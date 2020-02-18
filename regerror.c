@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <regex.h>
 
-#include "utils.h"
 #include "regerror.ih"
 
 static struct rerr {
