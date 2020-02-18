@@ -9,6 +9,13 @@
 #include "utils.h"
 #include "regex2.h"
 
+#ifdef _POSIX2_RE_DUP_MAX
+#define	DUPMAX	_POSIX2_RE_DUP_MAX
+#else
+#define	DUPMAX	255
+#endif
+#define	INFINITY	(DUPMAX + 1)
+
 /*
  * parse structure, passed up and down to avoid global variables and
  * other clumsinesses
