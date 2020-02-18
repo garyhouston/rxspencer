@@ -10,4 +10,3 @@ typedef unsigned char uch;
 #define	NDEBUG	/* no assertions please */
 #endif
 #endif
-#include <assert.h>

@@ -5,6 +5,7 @@
  * macros that code uses.  This lets the same code operate on two different
  * representations for state sets.
  */
+#include <assert.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
