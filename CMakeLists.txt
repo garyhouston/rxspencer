@@ -7,13 +7,12 @@ project ( rxspencer C )
 cmake_minimum_required ( VERSION 3.0 )
 option ( rxshared "build shared library instead of static" OFF )
 enable_testing()
-include ( cmake/mkh.cmake )
 
 # Define POSIX_MISTAKE to allow unmatched right parentheses as literals, as
 # required by POSIX 1003.2.
 # Define REDEBUG to enable debugging.
 add_definitions(-DPOSIX_MISTAKE -DREDEBUG)
-#add_compile_options(-Wall -Wextra -pedantic -Werror)
+add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 # Patch regerror.c to avoid conflict in MSVC
 if ( MSVC )
@@ -24,12 +23,6 @@ if ( MSVC )
     file ( WRITE regerror.c "${REGERROR}" )
   endif ( )
 endif ( )
-
-mkh ( regcomp.c ${CMAKE_BINARY_DIR}/regcomp.ih "" )
-mkh ( engine.c ${CMAKE_BINARY_DIR}/engine.ih "" )
-mkh ( regerror.c ${CMAKE_BINARY_DIR}/regerror.ih "" )
-mkh ( debug.c ${CMAKE_BINARY_DIR}/debug.ih "" )
-mkh ( main.c ${CMAKE_BINARY_DIR}/main.ih "" )
 
 # rxspencer library
 set ( CMAKE_INCLUDE_CURRENT_DIR 1 )

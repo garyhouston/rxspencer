@@ -5,7 +5,6 @@
 #include <assert.h>
 
 #include "regex.h"
-#include "main.ih"
 
 int debug = 0;
 int line = 0;
@@ -19,6 +18,16 @@ regoff_t endoff = 0;
 
 extern int split();
 extern void regprint();
+
+static void regress(FILE *in);
+static void try(char *f0, char *f1, char *f2, char *f3, char *f4, int opts);
+static char *check(char *str, regmatch_t sub, char *should);
+static int parseopts(int argc, char *argv[]);
+static int options(int type, char *s);
+static int opt(int c, char *s);
+static void fixstr(char *p);
+static char *eprint(int err);
+static int efind(char *name);
 
 /*
  - main - do the simple case, hand off to regress() for regression
@@ -98,9 +107,8 @@ char *argv[];
 
 /*
  - regress - main loop of regression test
- == void regress(FILE *in);
  */
-void
+static void
 regress(in)
 FILE *in;
 {
@@ -175,9 +183,8 @@ FILE *in;
 
 /*
  - try - try it, and report on problems
- == void try(char *f0, char *f1, char *f2, char *f3, char *f4, int opts);
  */
-void
+static void
 try(f0, f1, f2, f3, f4, opts)
 char *f0;
 char *f1;
@@ -286,9 +293,8 @@ int opts;			/* may not match f1 */
 
 /*
  - parseopts - half-baked option processing to avoid using getopt, which isn't always available on Windows.
- == int parseopts(int argc, char *argv[]);
  */
-int
+static int
 parseopts(argc, argv)
 int argc;
 char *argv[];
@@ -344,9 +350,8 @@ char *argv[];
 
 /*
  - options - pick options out of a regression-test string
- == int options(int type, char *s);
  */
-int
+static int
 options(type, s)
 int type;			/* 'c' compile, 'e' exec */
 char *s;
@@ -401,9 +406,8 @@ char *s;
 
 /*
  - opt - is a particular option in a regression string?
- == int opt(int c, char *s);
  */
-int				/* predicate */
+static int				/* predicate */
 opt(c, s)
 int c;
 char *s;
@@ -413,9 +417,8 @@ char *s;
 
 /*
  - fixstr - transform magic characters in strings
- == void fixstr(char *p);
  */
-void
+static void
 fixstr(p)
 char *p;
 {
@@ -435,9 +438,8 @@ char *p;
 
 /*
  - check - check a substring match
- == char *check(char *str, regmatch_t sub, char *should);
  */
-char *				/* NULL or complaint */
+static char *				/* NULL or complaint */
 check(str, sub, should)
 char *str;
 regmatch_t sub;
@@ -512,7 +514,6 @@ char *should;
 
 /*
  - eprint - convert error number to name
- == static char *eprint(int err);
  */
 static char *
 eprint(err)
@@ -528,7 +529,6 @@ int err;
 
 /*
  - efind - convert error name to number
- == static int efind(char *name);
  */
 static int
 efind(name)

@@ -7,11 +7,12 @@
 
 #include "regex.h"
 #include "regex2.h"
-#include "debug.ih"
+
+static void s_print(struct re_guts *g, FILE *d);
+static char *regchar(int ch);
 
 /*
  - regprint - print a regexp for debugging
- == void regprint(regex_t *r, FILE *d);
  */
 void
 regprint(r, d)
@@ -84,7 +85,6 @@ FILE *d;
 
 /*
  - s_print - print the strip for debugging
- == static void s_print(struct re_guts *g, FILE *d);
  */
 static void
 s_print(g, d)
@@ -225,7 +225,6 @@ FILE *d;
 
 /*
  - regchar - make a character printable
- == static char *regchar(int ch);
  */
 static char *			/* -> representation */
 regchar(ch)

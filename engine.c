@@ -45,8 +45,6 @@ struct match {
 	states empty;		/* empty set of states */
 };
 
-#include "engine.ih"
-
 #ifdef REDEBUG
 #define	SP(t, s, c)	print(m, t, s, c, stdout)
 #define	AT(t, p1, p2, s1, s2)	at(m, t, p1, p2, s1, s2)
@@ -57,10 +55,36 @@ struct match {
 #define	NOTE(s)	/* nothing */
 #endif
 
+static char *dissect(struct match *m, char *start,
+	char *stop, sopno startst, sopno stopst);
+static char *backref(struct match *m, char *start,
+	char *stop, sopno startst, sopno stopst, sopno lev);
+static char *fast(struct match *m, char *start,
+	char *stop, sopno startst, sopno stopst);
+static char *slow(struct match *m, char *start,
+	char *stop, sopno startst, sopno stopst);
+static states step(struct re_guts *g, sopno start, sopno stop,
+	states bef, int ch, states aft);
+#ifdef REDEBUG
+static void print(struct match *m, char *caption, states st,
+	int ch, FILE *d);
+static void at(struct match *m, char *title, char *start, char *stop,
+	sopno startst, sopno stopst);
+static char *pchar(int ch);
+#endif
+
+#define	BOL	(OUT+1)
+#define	EOL	(BOL+1)
+#define	BOLEOL	(BOL+2)
+#define	NOTHING	(BOL+3)
+#define	BOW	(BOL+4)
+#define	EOW	(BOL+5)
+#define	CODEMAX	(BOL+5)		// highest code used
+#define	NONCHAR(c)	((c) > CHAR_MAX)
+#define	NNONCHAR	(CODEMAX-CHAR_MAX)
+
 /*
  - matcher - the actual matching engine
- == static int matcher(struct re_guts *g, char *string, \
- ==	size_t nmatch, regmatch_t pmatch[], int eflags);
  */
 static int			/* 0 success, REG_NOMATCH failure */
 matcher(g, string, nmatch, pmatch, eflags)
@@ -225,8 +249,6 @@ int eflags;
 
 /*
  - dissect - figure out what matched what, no back references
- == static char *dissect(struct match *m, char *start, \
- ==	char *stop, sopno startst, sopno stopst);
  */
 static char *			/* == stop (success) always */
 dissect(m, start, stop, startst, stopst)
@@ -413,8 +435,6 @@ sopno stopst;
 
 /*
  - backref - figure out what matched what, figuring in back references
- == static char *backref(struct match *m, char *start, \
- ==	char *stop, sopno startst, sopno stopst, sopno lev);
  */
 static char *			/* == stop (success) or NULL (failure) */
 backref(m, start, stop, startst, stopst, lev)
@@ -618,8 +638,6 @@ sopno lev;			/* PLUS nesting level */
 
 /*
  - fast - step through the string at top speed
- == static char *fast(struct match *m, char *start, \
- ==	char *stop, sopno startst, sopno stopst);
  */
 static char *			/* where tentative match ended, or NULL */
 fast(m, start, stop, startst, stopst)
@@ -709,8 +727,6 @@ sopno stopst;
 
 /*
  - slow - step through the string more deliberately
- == static char *slow(struct match *m, char *start, \
- ==	char *stop, sopno startst, sopno stopst);
  */
 static char *			/* where it ended */
 slow(m, start, stop, startst, stopst)
@@ -796,17 +812,6 @@ sopno stopst;
 
 /*
  - step - map set of states reachable before char to set reachable after
- == static states step(struct re_guts *g, sopno start, sopno stop, \
- ==	states bef, int ch, states aft);
- == #define	BOL	(OUT+1)
- == #define	EOL	(BOL+1)
- == #define	BOLEOL	(BOL+2)
- == #define	NOTHING	(BOL+3)
- == #define	BOW	(BOL+4)
- == #define	EOW	(BOL+5)
- == #define	CODEMAX	(BOL+5)		// highest code used
- == #define	NONCHAR(c)	((c) > CHAR_MAX)
- == #define	NNONCHAR	(CODEMAX-CHAR_MAX)
  */
 static states
 step(g, start, stop, bef, ch, aft)
@@ -925,10 +930,6 @@ states aft;		/* states already known reachable after */
 #ifdef REDEBUG
 /*
  - print - print a set of states
- == #ifdef REDEBUG
- == static void print(struct match *m, char *caption, states st, \
- ==	int ch, FILE *d);
- == #endif
  */
 static void
 print(m, caption, st, ch, d)
@@ -958,10 +959,6 @@ FILE *d;
 
 /* 
  - at - print current situation
- == #ifdef REDEBUG
- == static void at(struct match *m, char *title, char *start, char *stop, \
- ==						sopno startst, sopno stopst);
- == #endif
  */
 static void
 at(m, title, start, stop, startst, stopst)
@@ -984,9 +981,6 @@ sopno stopst;
 #define	PCHARDONE	/* never again */
 /*
  - pchar - make a character printable
- == #ifdef REDEBUG
- == static char *pchar(int ch);
- == #endif
  *
  * Is this identical to regchar() over in debug.c?  Well, yes.  But a
  * duplicate here avoids having a debugging-capable regexec.o tied to

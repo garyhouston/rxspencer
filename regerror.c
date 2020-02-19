@@ -7,7 +7,6 @@
 #include <stdlib.h>
 
 #include "regex.h"
-#include "regerror.ih"
 
 static struct rerr {
 	int code;
@@ -33,6 +32,8 @@ static struct rerr {
 	{REG_INVARG,	"REG_INVARG",	"invalid argument to regex routine"},
 	{-1,		"",		"*** unknown regexp error code ***"},
 };
+
+static char *regatoi(const regex_t *preg, char *localbuf);
 
 /*
  - regerror - the interface to error numbers
@@ -84,7 +85,6 @@ size_t errbuf_size;
 
 /*
  - regatoi - internal routine to implement REG_ATOI
- == static char *regatoi(const regex_t *preg, char *localbuf);
  */
 static char *
 regatoi(preg, localbuf)

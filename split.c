@@ -179,6 +179,7 @@ char *argv[];
 	exit(0);
 }
 
+static void
 dosplit(string, seps)
 char *string;
 char *seps;
@@ -191,6 +192,7 @@ char *seps;
 	print(nf, NF, fields);
 }
 
+static void
 print(nf, nfp, fields)
 int nf;
 int nfp;
@@ -274,6 +276,7 @@ struct {
 	NULL,		NULL,	0,	{ NULL },
 };
 
+static void
 regress()
 {
 	char buf[512];
