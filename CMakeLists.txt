@@ -14,16 +14,6 @@ enable_testing()
 add_definitions(-DPOSIX_MISTAKE -DREDEBUG)
 #add_compile_options(-Wall -Wextra -pedantic -Werror)
 
-# Patch regerror.c to avoid conflict in MSVC
-if ( MSVC )
-  file ( READ regerror.c REGERROR )
-  string ( REGEX MATCH errcode REGERROR_UNPATCHED "${REGERROR}" )
-  if ( REGERROR_UNPATCHED )
-    string ( REPLACE errcode errorcode REGERROR "${REGERROR}" )
-    file ( WRITE regerror.c "${REGERROR}" )
-  endif ( )
-endif ( )
-
 # rxspencer library
 set ( CMAKE_INCLUDE_CURRENT_DIR 1 )
 set ( RXSPENCER_SRCS regcomp.c regerror.c regexec.c regfree.c )

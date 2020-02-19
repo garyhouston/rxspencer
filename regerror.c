@@ -40,26 +40,26 @@ static char *regatoi(const regex_t *preg, char *localbuf);
  */
 /* ARGSUSED */
 size_t
-regerror(errcode, preg, errbuf, errbuf_size)
-int errcode;
+regerror(errorcode, preg, errbuf, errbuf_size)
+int errorcode;
 const regex_t *preg;
 char *errbuf;
 size_t errbuf_size;
 {
 	struct rerr *r;
 	size_t len;
-	int target = errcode &~ REG_ITOA;
+	int target = errorcode &~ REG_ITOA;
 	char *s;
 	char convbuf[50];
 
-	if (errcode == REG_ATOI)
+	if (errorcode == REG_ATOI)
 		s = regatoi(preg, convbuf);
 	else {
 		for (r = rerrs; r->code >= 0; r++)
 			if (r->code == target)
 				break;
 	
-		if (errcode&REG_ITOA) {
+		if (errorcode&REG_ITOA) {
 			if (r->code >= 0)
 				(void) strcpy(convbuf, r->name);
 			else
