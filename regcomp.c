@@ -118,13 +118,7 @@ int cflags;
 	struct parse *p = &pa;
 	int i;
 	size_t len;
-#ifdef REDEBUG
-#	define	GOODFLAGS(f)	(f)
-#else
-#	define	GOODFLAGS(f)	((f)&~REG_DUMP)
-#endif
 
-	cflags = GOODFLAGS(cflags);
 	if ((cflags&REG_EXTENDED) && (cflags&REG_NOSPEC))
 		return(REG_INVARG);
 
