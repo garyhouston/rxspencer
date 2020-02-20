@@ -66,8 +66,8 @@ static int isinsets(struct re_guts *g, int c);
 static int samesets(struct re_guts *g, int c1, int c2);
 static void categorize(struct parse *p, struct re_guts *g);
 static sopno dupl(struct parse *p, sopno start, sopno finish);
-static void doemit(struct parse *p, sop op, size_t opnd);
-static void doinsert(struct parse *p, sop op, size_t opnd, sopno pos);
+static void doemit(struct parse *p, sop op, sop opnd);
+static void doinsert(struct parse *p, sop op, sopno opnd, sopno pos);
 static void dofwd(struct parse *p, sopno pos, sop value);
 static void enlarge(struct parse *p, sopno size);
 static void stripsnug(struct parse *p, struct re_guts *g);
@@ -92,7 +92,7 @@ static sopno pluscount(struct parse *p, struct re_guts *g);
 #define	GETNEXT()	(*p->next++)
 #define	REQUIRE(co, e)	((co) ? (void) 0 : seterr(p, (e)))
 #define	MUSTEAT(c, e)	(REQUIRE(MORE() && GETNEXT() == (c), e))
-#define	EMIT(op, sopnd)	doemit(p, (sop)(op), (size_t)(sopnd))
+#define	EMIT(op, sopnd)	doemit(p, (sop)(op), (sop)(sopnd))
 #define	INSERT(op, pos)	doinsert(p, (sop)(op), HERE()-(pos)+1, pos)
 #define	AHEAD(pos)		dofwd(p, pos, HERE()-(pos))
 #define	ASTERN(sop, pos)	EMIT(sop, HERE()-pos)
@@ -125,7 +125,7 @@ int cflags;
 	if (cflags&REG_PEND) {
 		if (preg->re_endp < pattern)
 			return(REG_INVARG);
-		len = preg->re_endp - pattern;
+		len = (size_t) (preg->re_endp - pattern);
 	} else
 		len = strlen((char *)pattern);
 
@@ -141,9 +141,9 @@ int cflags;
 	    free((char *) g);
 	    return REG_INVARG;
 	  }
-	  p->ssize = new_ssize;
+	  p->ssize = (sopno)new_ssize;
 	}
-	p->strip = (sop *)malloc(p->ssize * sizeof(sop));
+	p->strip = (sop *)malloc((size_t)p->ssize * sizeof(sop));
 	p->slen = 0;
 	if (p->strip == NULL) {
 		free((char *)g);
@@ -276,7 +276,7 @@ struct parse *p;
 	case '(':
 		REQUIRE(MORE(), REG_EPAREN);
 		p->g->nsub++;
-		subno = p->g->nsub;
+		subno = (sopno)p->g->nsub;
 		if (subno < NPAREN)
 			p->pbegin[subno] = HERE();
 		EMIT(OLPAREN, subno);
@@ -492,7 +492,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 		break;
 	case BACKSL|'(':
 		p->g->nsub++;
-		subno = p->g->nsub;
+		subno = (sopno)p->g->nsub;
 		if (subno < NPAREN)
 			p->pbegin[subno] = HERE();
 		EMIT(OLPAREN, subno);
@@ -773,7 +773,7 @@ cset *cs;
 
 	while (MORE() && isalpha(PEEK()))
 		NEXT();
-	len = p->next - sp;
+	len = (size_t)(p->next - sp);
 	for (cp = cclasses; cp->name != NULL; cp++)
 		if (strncmp(cp->name, sp, len) == 0 && cp->name[len] == '\0')
 			break;
@@ -938,7 +938,7 @@ int endc;			/* name ended by endc,']' */
 {
 	char *sp = p->next;
 	struct cname *cp;
-	int len;
+	size_t len;
 
 	while (MORE() && !SEETWO(endc, ']'))
 		NEXT();
@@ -946,7 +946,7 @@ int endc;			/* name ended by endc,']' */
 		seterr(p, REG_EBRACK);
 		return(0);
 	}
-	len = p->next - sp;
+	len = (size_t)(p->next - sp);
 	for (cp = cnames; cp->name != NULL; cp++)
 		if (strncmp(cp->name, sp, len) == 0 && cp->name[len] == '\0')
 			return(cp->code);	/* known name */
@@ -965,11 +965,11 @@ int ch;
 {
 	assert(isalpha(ch));
 	if (isupper(ch))
-		return(tolower(ch));
+		return((char)tolower(ch));
 	else if (islower(ch))
-		return(toupper(ch));
+		return((char)toupper(ch));
 	else			/* peculiar, but could happen */
-		return(ch);
+		return((char)ch);
 }
 
 /*
@@ -989,7 +989,7 @@ int ch;
 	assert(othercase(ch) != ch);	/* p_bracket() would recurse */
 	p->next = bracket;
 	p->end = bracket+2;
-	bracket[0] = ch;
+	bracket[0] = (char)ch;
 	bracket[1] = ']';
 	bracket[2] = '\0';
 	p_bracket(p);
@@ -1011,9 +1011,9 @@ int ch;
 	if ((p->g->cflags&REG_ICASE) && isalpha(ch) && othercase(ch) != ch)
 		bothcases(p, ch);
 	else {
-		EMIT(OCHAR, (unsigned char)ch);
+		EMIT(OCHAR, (sopno)ch);
 		if (cap[ch] == 0)
-			cap[ch] = p->g->ncategories++;
+			cap[ch] = (cat_t)(p->g->ncategories++);
 	}
 }
 
@@ -1135,10 +1135,10 @@ allocset(p)
 struct parse *p;
 {
 	int no = p->g->ncsets++;
-	size_t nc;
-	size_t nbytes;
+	int nc;
+	int nbytes;
 	cset *cs;
-	size_t css = (size_t)p->g->csetsize;
+	int css = p->g->csetsize;
 	int i;
 
 	if (no >= p->ncsalloc) {	/* need another column of space */
@@ -1147,22 +1147,22 @@ struct parse *p;
 		assert(nc % CHAR_BIT == 0);
 		nbytes = nc / CHAR_BIT * css;
 		if (p->g->sets == NULL)
-			p->g->sets = (cset *)malloc(nc * sizeof(cset));
+			p->g->sets = (cset *)malloc((size_t)nc * sizeof(cset));
 		else
 			p->g->sets = (cset *)realloc((char *)p->g->sets,
-							nc * sizeof(cset));
+							(size_t)nc * sizeof(cset));
 		if (p->g->setbits == NULL)
-			p->g->setbits = (uch *)malloc(nbytes);
+			p->g->setbits = (uch *)malloc((size_t)nbytes);
 		else {
 			p->g->setbits = (uch *)realloc((char *)p->g->setbits,
-								nbytes);
+							(size_t)nbytes);
 			/* xxx this isn't right if setbits is now NULL */
 			for (i = 0; i < no; i++)
 				p->g->sets[i].ptr = p->g->setbits + css*(i/CHAR_BIT);
 		}
 		if (p->g->sets != NULL && p->g->setbits != NULL)
 			(void) memset((char *)p->g->setbits + (nbytes - css),
-								0, css);
+							0, (size_t)css);
 		else {
 			no = 0;
 			seterr(p, REG_ESPACE);
@@ -1173,7 +1173,7 @@ struct parse *p;
 	assert(p->g->sets != NULL);	/* xxx */
 	cs = &p->g->sets[no];
 	cs->ptr = p->g->setbits + css*((no)/CHAR_BIT);
-	cs->mask = 1 << ((no) % CHAR_BIT);
+	cs->mask = (uch) (1 << ((no) % CHAR_BIT));
 	cs->hash = 0;
 	cs->smultis = 0;
 	cs->multis = NULL;
@@ -1443,7 +1443,7 @@ struct re_guts *g;
 
 	for (c = CHAR_MIN; c <= CHAR_MAX; c++)
 		if (cats[c] == 0 && isinsets(g, c)) {
-			cat = g->ncategories++;
+			cat = (cat_t)g->ncategories++;
 			cats[c] = cat;
 			for (c2 = c+1; c2 <= CHAR_MAX; c2++)
 				if (cats[c2] == 0 && samesets(g, c, c2))
@@ -1485,7 +1485,7 @@ static void
 doemit(p, op, opnd)
 struct parse *p;
 sop op;
-size_t opnd;
+sop opnd;
 {
 	/* avoid making error situations worse */
 	if (p->error != 0)
@@ -1510,7 +1510,7 @@ static void
 doinsert(p, op, opnd, pos)
 struct parse *p;
 sop op;
-size_t opnd;
+sopno opnd;
 sopno pos;
 {
 	sopno sn;
@@ -1538,7 +1538,7 @@ sopno pos;
 	}
 
 	memmove((char *)&p->strip[pos+1], (char *)&p->strip[pos],
-						(HERE()-pos-1)*sizeof(sop));
+				(size_t)(HERE()-pos-1)*sizeof(sop));
 	p->strip[pos] = s;
 }
 
@@ -1572,7 +1572,7 @@ sopno size;
 	if (p->ssize >= size)
 		return;
 
-	sp = (sop *)realloc(p->strip, size*sizeof(sop));
+	sp = (sop *)realloc(p->strip, (size_t)size*sizeof(sop));
 	if (sp == NULL) {
 		seterr(p, REG_ESPACE);
 		return;
@@ -1590,7 +1590,7 @@ struct parse *p;
 struct re_guts *g;
 {
 	g->nstates = p->slen;
-	g->strip = (sop *)realloc((char *)p->strip, p->slen * sizeof(sop));
+	g->strip = (sop *)realloc((char *)p->strip, (size_t)p->slen * sizeof(sop));
 	if (g->strip == NULL) {
 		seterr(p, REG_ESPACE);
 		g->strip = p->strip;
@@ -1614,7 +1614,7 @@ struct re_guts *g;
 	sop *scan;
 	sop *start;
 	sop *newstart;
-	sopno newlen;
+	int newlen;
 	sop s;
 	char *cp;
 	sopno i;
