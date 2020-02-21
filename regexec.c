@@ -68,20 +68,20 @@ static int nope = 0;		/* for use in asserts; shuts lint up */
 
 /* macros for manipulating states, large version */
 #define	states	char *
-#define	CLEAR(v)	memset(v, 0, m->g->nstates)
+#define	CLEAR(v)	memset(v, 0, (size_t)m->g->nstates)
 #define	SET0(v, n)	((v)[n] = 0)
 #define	SET1(v, n)	((v)[n] = 1)
 #define	ISSET(v, n)	((v)[n])
-#define	ASSIGN(d, s)	memcpy(d, s, m->g->nstates)
-#define	EQ(a, b)	(memcmp(a, b, m->g->nstates) == 0)
+#define	ASSIGN(d, s)	memcpy(d, s, (size_t)m->g->nstates)
+#define	EQ(a, b)	(memcmp(a, b, (size_t)m->g->nstates) == 0)
 #define	STATEVARS	int vn; char *space
-#define	STATESETUP(m, nv)	{ (m)->space = malloc((nv)*(m)->g->nstates); \
+#define	STATESETUP(m, nv)	{ (m)->space = malloc((size_t)((nv)*(m)->g->nstates)); \
 				if ((m)->space == NULL) return(REG_ESPACE); \
 				(m)->vn = 0; }
 #define	STATETEARDOWN(m)	{ free((m)->space); }
 #define	SETUP(v)	((v) = &m->space[m->vn++ * m->g->nstates])
 #define	onestate	int
-#define	INIT(o, n)	((o) = (n))
+#define	INIT(o, n)	((o) = (int)(n))
 #define	INC(o)	((o)++)
 #define	ISSTATEIN(v, o)	((v)[o])
 /* some abbreviations; note that some of these know variable names! */

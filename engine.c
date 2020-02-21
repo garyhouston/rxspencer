@@ -180,7 +180,7 @@ int eflags;
 			dp = dissect(m, m->coldp, endp, gf, gl);
 		} else {
 			if (g->nplus > 0 && m->lastpos == NULL)
-				m->lastpos = (char **)malloc((g->nplus+1) *
+				m->lastpos = (char **)malloc(((size_t)g->nplus+1) *
 							sizeof(char *));
 			if (g->nplus > 0 && m->lastpos == NULL) {
 				free(m->pmatch);
@@ -548,7 +548,7 @@ sopno lev;			/* PLUS nesting level */
 		if (m->pmatch[i].rm_eo == -1)
 			return(NULL);
 		assert(m->pmatch[i].rm_so != -1);
-		len = m->pmatch[i].rm_eo - m->pmatch[i].rm_so;
+		len = (size_t)(m->pmatch[i].rm_eo - m->pmatch[i].rm_so);
 		assert((size_t) (stop - m->beginp) >= len);
 		if (sp > stop - len)
 			return(NULL);	/* not enough left to match */
