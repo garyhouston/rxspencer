@@ -33,72 +33,49 @@ static struct rerr {
 	{-1,		"",		"*** unknown regexp error code ***"},
 };
 
-static char *regatoi(const regex_t *preg, char *localbuf);
+static size_t
+set_result(char *errbuf, size_t errbuf_size, char *result) {
+	size_t result_len = strlen(result);
+	if (errbuf_size > 0) {
+		size_t copy_len = result_len < errbuf_size ? result_len : errbuf_size - 1;
+		memcpy(errbuf, result, copy_len);
+		errbuf[copy_len] = 0;
+	}
+	return result_len + 1;
+}
 
 /*
  - regerror - the interface to error numbers
  */
-/* ARGSUSED */
 size_t
-regerror(errorcode, preg, errbuf, errbuf_size)
-int errorcode;
-const regex_t *preg;
-char *errbuf;
-size_t errbuf_size;
+regerror(int errorcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
 {
 	struct rerr *r;
-	size_t len;
-	int target = errorcode &~ REG_ITOA;
-	char *s;
 	char convbuf[50];
 
-	if (errorcode == REG_ATOI)
-		s = regatoi(preg, convbuf);
+	if (errorcode == REG_ATOI) {
+		if (preg == NULL || preg->re_endp == NULL)
+			return set_result(errbuf, errbuf_size, "0");
+		for (r = rerrs; r->code >= 0; r++)
+			if (strcmp(r->name, preg->re_endp) == 0)
+				break;
+		if (r->code < 0)
+			return set_result(errbuf, errbuf_size, "0");
+		snprintf(convbuf, sizeof convbuf, "%d", r->code);
+		return set_result(errbuf, errbuf_size, convbuf);
+	}
 	else {
+		int target = errorcode &~ REG_ITOA;
+		
 		for (r = rerrs; r->code >= 0; r++)
 			if (r->code == target)
 				break;
-	
-		if (errorcode&REG_ITOA) {
+		if (errorcode & REG_ITOA) {
 			if (r->code >= 0)
-				(void) strcpy(convbuf, r->name);
-			else
-				sprintf(convbuf, "REG_0x%x", target);
-			assert(strlen(convbuf) < sizeof(convbuf));
-			s = convbuf;
-		} else
-			s = r->explain;
-	}
-
-	len = strlen(s) + 1;
-	if (errbuf_size > 0) {
-		if (errbuf_size > len)
-			(void) strcpy(errbuf, s);
-		else {
-			(void) strncpy(errbuf, s, errbuf_size-1);
-			errbuf[errbuf_size-1] = '\0';
+				return set_result(errbuf, errbuf_size, r->name);
+			snprintf(convbuf, sizeof convbuf, "REG_0x%x", target);
+			return set_result(errbuf, errbuf_size, convbuf);
 		}
+		return set_result(errbuf, errbuf_size, r->explain);
 	}
-
-	return(len);
-}
-
-/*
- - regatoi - internal routine to implement REG_ATOI
- */
-static char *
-regatoi(preg, localbuf)
-const regex_t *preg;
-char *localbuf;
-{
-	struct rerr *r;
-
-	for (r = rerrs; r->code >= 0; r++)
-		if (strcmp(r->name, preg->re_endp) == 0)
-			break;
-	if (r->code < 0)
-		return("0");
-
-	sprintf(localbuf, "%d", r->code);
-	return(localbuf);
 }
