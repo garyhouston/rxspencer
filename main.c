@@ -237,8 +237,8 @@ int opts;			/* may not match f1 */
 	if (options('e', f1)&REG_STARTEND) {
 		if (strchr(f2, '(') == NULL || strchr(f2, ')') == NULL)
 			fprintf(stderr, "%d: bad STARTEND syntax\n", line);
-		subs[0].rm_so = strchr(f2, '(') - f2 + 1;
-		subs[0].rm_eo = strchr(f2, ')') - f2;
+		subs[0].rm_so = (regoff_t)(strchr(f2, '(') - f2 + 1);
+		subs[0].rm_eo = (regoff_t)(strchr(f2, ')') - f2);
 	}
 	err = regexec(&re, f2copy, NSUBS, subs, options('e', f1));
 
