@@ -1,5 +1,8 @@
-New in alpha3.8.g8 (Gary Houston): Conversion to cmake build system,
-contributed by Stephen Just. (not released)
+New in 3.9.0 (Gary Houston): Conversion to cmake build system,
+contributed by Stephen Just. Simplify version labelling. Simplify
+build system by not generating headers. Adjust types and add casts to
+avoid compiler warnings. Remove unused and undocumented REG_DUMP
+flag. Make regerror more robust.
 
 New in alpha3.8.g7 (Gary Houston): Configuration scripts updated. Make sure
 symlinks aren't created by libtool. 26 Nov 2015.
