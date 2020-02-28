@@ -1,16 +1,18 @@
-This is a modified version of Henry Spencer's regular expression library.
-The original library can be found at https://github.com/garyhouston/regex
-A description of Spencer's various libraries can be found at
-https://garyhouston.github.io/regex/
+This is a modified version of Henry Spencer's "BSD" regular expression
+library. The original library can be found at
+https://github.com/garyhouston/regex.  A description of Spencer's
+various libraries can be found at https://garyhouston.github.io/regex/
 
 The changes in this version are:
-* The library name has been changed to rxspencer, the header placed
-  in a directory rxspencer, and the man pages named accordingly, to allow
-  easy installation as a system library on Linux without conflicting with
-  other regex libraries.
-* A CMake build system, which can build either static or shared libraries,
-  maybe even on non-Unix systems.
-* A few code modernizations and changes to improve portabilty. 
+
+* The library name has been changed to rxspencer, the header installs
+  into a directory rxspencer, and the man pages named accordingly, to
+  allow easy installation as a system library on Linux without
+  conflicting with other regex libraries.
+* A CMake build system, which can build either static or shared
+  libraries, maybe even on non-Unix systems.
+* A few code modernizations and changes to improve portabilty, avoid
+  compiler warnings, and improve robustness.
 
 I (Gary Houston) originally made this version with a build system
 based on GNU Automake and Libtool, to allow building a shared library
@@ -25,8 +27,7 @@ changes to the public domain under the Creative Commons Zero license.
 Installation
 ============
 
-Ignore the installation notes in the original README below. CMake
-needs to be installed. To build from a Linux command line, or
+CMake needs to be installed. To build from a Linux command line, or
 something compatible, within the source directory:
 
 to configure for a static library:
@@ -67,37 +68,3 @@ https://garyhouston.github.io/regex/regex7.html.
 
 --
 Gary Houston,  ghouston@arglist.com
-
----- original README follows --------
-alpha3.8 release.
-Tue Aug 10 15:51:48 EDT 1999
-henry@spsystems.net  (formerly henry@zoo.toronto.edu)
-
-See WHATSNEW for change listing.
-
-installation notes:
---------
-Read the comments at the beginning of Makefile before running.
-
-Utils.h contains some things that just might have to be modified on
-some systems, as well as a nested include (ugh) of <assert.h>.
-
-The "fake" directory contains quick-and-dirty fakes for some header
-files and routines that old systems may not have.  Note also that
--DUSEBCOPY will make utils.h substitute bcopy() for memmove().
-
-After that, "make r" will build regcomp.o, regexec.o, regfree.o,
-and regerror.o (the actual routines), bundle them together into a test
-program, and run regression tests on them.  No output is good output.
-
-"make lib" builds just the .o files for the actual routines (when
-you're happy with testing and have adjusted CFLAGS for production),
-and puts them together into libregex.a.  You can pick up either the
-library or *.o ("make lib" makes sure there are no other .o files left
-around to confuse things).
-
-Main.c, debug.c, split.c are used for regression testing but are not part
-of the RE routines themselves.
-
-Regex.h goes in /usr/include.  All other .h files are internal only.
---------
