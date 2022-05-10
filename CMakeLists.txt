@@ -6,7 +6,8 @@
 project ( rxspencer C )
 cmake_minimum_required ( VERSION 3.0 )
 option ( rxshared "build shared library instead of static" OFF )
-enable_testing()
+option ( BUILD_TESTING "build tests" ON )
+option ( INSTALL_DOCS "install documentation" ON )
 
 # Define POSIX_MISTAKE to allow unmatched right parentheses as literals, as
 # required by POSIX 1003.2.
@@ -21,8 +22,6 @@ set ( RXSPENCER_INCLUDE_DIR include/rxspencer )
 set ( RXSPENCER_BIN_DIR bin )
 set ( RXSPENCER_LIB_DIR lib )
 set ( RXSPENCER_DATA_DIR share/rxspencer )
-set ( RXSPENCER_MAN3_DIR man/man3 )
-set ( RXSPENCER_MAN7_DIR man/man7 )
 
 if ( MSVC )
   set ( DEF_FILE librxspencer.def )
@@ -47,10 +46,15 @@ install ( TARGETS rxspencer
   PUBLIC_HEADER DESTINATION ${RXSPENCER_INCLUDE_DIR} )
 
 # Install docs
-set ( RXSPENCER_DATA_FILES "COPYRIGHT;README;WHATSNEW" )
-install ( FILES ${RXSPENCER_DATA_FILES} DESTINATION ${RXSPENCER_DATA_DIR} )
-install ( FILES rxspencer.3 DESTINATION ${RXSPENCER_MAN3_DIR} )
-install ( FILES rxspencer.7 DESTINATION ${RXSPENCER_MAN7_DIR} )
+if ( INSTALL_DOCS )
+  set ( RXSPENCER_MAN3_DIR man/man3 )
+  set ( RXSPENCER_MAN7_DIR man/man7 )
+  set ( RXSPENCER_DATA_FILES "COPYRIGHT;README;WHATSNEW" )
+
+  install ( FILES ${RXSPENCER_DATA_FILES} DESTINATION ${RXSPENCER_DATA_DIR} )
+  install ( FILES rxspencer.3 DESTINATION ${RXSPENCER_MAN3_DIR} )
+  install ( FILES rxspencer.7 DESTINATION ${RXSPENCER_MAN7_DIR} )
+endif ( )
 
 # generate cmake configuration file
 include ( CMakePackageConfigHelpers )
@@ -70,7 +74,10 @@ install ( FILES
   ${CMAKE_CURRENT_BINARY_DIR}/RXSpencerConfig.cmake
   DESTINATION ${CMAKE_CONFIG_DEST} )
 
-add_executable(tester ${RXSPENCER_SRCS} debug.c main.c split.c)
-add_test(NAME test1 COMMAND sh -c "./tester -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
-add_test(NAME test2 COMMAND sh -c "./tester -el -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
-add_test(NAME test3 COMMAND sh -c "./tester -er -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
+if ( BUILD_TESTING )
+  enable_testing()
+  add_executable(tester ${RXSPENCER_SRCS} debug.c main.c split.c)
+  add_test(NAME test1 COMMAND sh -c "./tester -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
+  add_test(NAME test2 COMMAND sh -c "./tester -el -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
+  add_test(NAME test3 COMMAND sh -c "./tester -er -f ${CMAKE_CURRENT_SOURCE_DIR}/tests")
+endif ( )
