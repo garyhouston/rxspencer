@@ -38,6 +38,12 @@ cmake -Drxshared=0 .
 to configure for a shared library:
 cmake -Drxshared=1 .
 
+to disable tests:
+cmake -DBUILD_TESTING=OFF .
+
+to disable manuals/ documentation:
+cmake -DINSTALL_DOCS=OFF .
+
 to build:
 make
 make install
