@@ -481,7 +481,6 @@ char *should;
 	}
 
 	len = (int)(sub.rm_eo - sub.rm_so);
-	shlen = strlen(should);
 	p = str + sub.rm_so;
 
 	/* check for not supposed to match */
@@ -489,6 +488,8 @@ char *should;
 		sprintf(grump, "matched `%.*s'", len, p);
 		return(grump);
 	}
+
+	shlen = strlen(should);
 
 	/* check for wrong match */
 	if ((size_t)len != shlen || strncmp(p, should, shlen) != 0) {
