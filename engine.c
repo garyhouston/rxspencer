@@ -738,6 +738,7 @@ sopno stopst;
 {
 	states st = m->st;
 	states empty = m->empty;
+	states tmp = m->tmp;
 	char *p = start;
 	int c = (start == m->beginp) ? OUT : *(start-1);
 	int lastc;	/* previous c */
@@ -796,8 +797,10 @@ sopno stopst;
 			break;		/* NOTE BREAK OUT */
 
 		/* no, we must deal with this character */
+		ASSIGN(tmp, st);
+		ASSIGN(st, empty);
 		assert(c != OUT);
-		st = step(m->g, startst, stopst, st, c, empty);
+		st = step(m->g, startst, stopst, tmp, c, st);
 		SP("saft", st, c);
 		assert(EQ(step(m->g, startst, stopst, st, NOTHING, st), st));
 		p++;
