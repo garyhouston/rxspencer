@@ -480,7 +480,6 @@ char *should;
 	}
 
 	len = sub.rm_eo - sub.rm_so;
-	shlen = strlen(should);
 	p = str + sub.rm_so;
 
 	/* check for not supposed to match */
